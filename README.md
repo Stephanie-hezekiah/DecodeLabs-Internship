@@ -42,8 +42,6 @@ Power BI: Data Modeling, DAX (Time Intelligence), and Visualization.
 
 Excel Office: Initial data exploration and cleaning.
 
-DAX: For custom measures (YTD, QTD, YoY Variance).
-
 
 ### Data Cleaning & Transformation
 ---
@@ -85,9 +83,9 @@ Data Modelling
 
 I implemented a Star Schema to optimize performance and simplify the DAX calculations.
 
-•	Fact Table: Sales_Data (Cleaned transactions).
+•	Fact Table: Sales (Cleaned transactions).
 
-•	Dimension Tables: Calendar_Table, Product_Category, and Region_Zones.
+•	Dimension Tables: Pivot
 
 
 ### Data Virtualization

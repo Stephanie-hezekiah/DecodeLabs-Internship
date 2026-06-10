@@ -11,7 +11,7 @@ Data Analysis Project 2
 
 [Tools Used](#tools-used)
 
-[Data Cleaning & Transformation](#data-Cleaning-and-transformation)
+[Data Cleaning and Transformation](#data-cleaning-and-transformation)
  
 [Data Virtualization](#data-virtualization)
 
@@ -43,45 +43,39 @@ Power BI: Data Modeling, DAX (Time Intelligence), and Visualization.
 Excel Office: Initial data exploration and cleaning.
 
 
-### Data Cleaning & Transformation
+### Data Cleaning and Transformation
 ---
 Before analysis, the raw dataset underwent a rigorous cleaning process in Excel and Power BI (Power Query) to ensure "one version of the truth."
 
 1. Handling Date Inconsistencies
 
-The raw data contained three different date formats (DD/MM/YYYY, DD-MMM-YYYY, and YYYY-MM-DD).
+The raw data contained empty cells on the coupon code column.
 
-•	Action: Standardized all entries to a unified Date format to enable Time Intelligence functions.
+•	Action: Remove all empty cells to avoid getting errors.
 
 •	Tool: Excel "Text-to-Columns" and Power Query "Locale-based Transformation."
 
-2. Text Normalization
-
-The Region, Category, and Product columns had inconsistent casing and hidden characters (e.g., "North\t", "EAST", "computers").
-
-•	Action: Applied TRIM, CLEAN, and UPPER (Proper Case) functions to ensure categories grouped correctly in charts.
-
-•	Result: Prevented duplicate categories like "Mobile" and "mobile" from appearing separately.
-
-3. Feature Engineering (New Columns)
-
-To meet the case study requirements, I created several calculated columns:
-
-•	Total Sales: [Units Sold] * [Unit Price]
-
-•	Total Profit: [Total Sales] * 0.2 (Applying the 20% margin requirement).
-
-•	Date Table: Created a separate Calendar Table in Power BI with columns for Year, Quarter, Month, and Fiscal Period to support YTD and YoY analysis.
-
-4. Data Validation
+2.Data Validation
 
 •	Duplicate Removal: Scanned for and removed duplicate transaction IDs to avoid overstating revenue.
 
 •	Outlier Check: Verified that the 2.5 Million unit price for Laptops was correct and not a typing error (confirmed via product catalog).
 
-Data Modelling
+3. Descriptive Statistical Profiling:
 
-I implemented a Star Schema to optimize performance and simplify the DAX calculations.
+I implemented core statistical distributions to establish baseline metrics (Mean, Median, Mode and Count distributions) for purchase volumes and pricing models.
+
+4. Multi-Dimensional Pivot Aggregations:
+
+i. I developed dynamic Pivot Tables to segment variables across cross-sections of the business.
+
+ii. I aggregated revenue metrics to isolate top performing product categories (identifying Chairs and Printers as leading gross earners at over $195,600 each).
+
+iii. I also grouped transaction velocities by payment funnels to identify volume density (e.g., establishing that Online Payments and Credit Cards capture the highest financial shares with 731 and 712 items ordered respectively).
+
+5. Data Modelling
+
+I implemented a Star Schema to optimize performance, this design decouples transactional metrics (numerical facts) from the contextual attributes (dimensions) that describe them.
 
 •	Fact Table: Sales (Cleaned transactions).
 
@@ -128,37 +122,36 @@ Visual Insights Derived
 ---
 This phase involved a deep dive into the dataset to understand the underlying distributions and relationships between variables.
 
-1. Data Profiling & Quality Audit
+1. Data Integrity Auditing & Forensic Profiling: The primary step of the EDA process involved assessing the structural completeness and accuracy of the dataset.
 
-•	Volume Check: Analyzed 100 rows of transactions with 10 variables (Date, Region, Product, etc.).
+i. Schema Consistency Validation: Evaluated the data types across all rows to verify that numeric keys, transaction tracking integers, alpha-numeric order strings, and localized address lines conformed to explicit column rules.
 
-•	Data Integrity: Identified inconsistencies in the Date column where formats varied between DD/MM/YYYY, DD-MMM-YYYY, and YYYY-MM-DD.
+ii. Duplicate and Null Verification: Profiled primary identifier fields (OrderID, TrackingNumber) to ensure unique constraints were maintained, preventing data inflation or fragmented analytics downstream.
 
-•	Missing Values: Audited the Profit and Sales columns to ensure no null values would skew the final KPIs.
+iii. Mathematical Integrity Check: Implemented formula audits across the derived metric field (TotalPrice). By cross-calculating $(\text{Quantity} \times \text{UnitPrice})$ programmatically against the recorded totals, the data model was verified to be free from rounding drifts, truncations, or corrupted baseline metrics.
 
-2. Descriptive Statistics
+2. Descriptive Statistical Analysis: Descriptive metrics were compiled to profile center-tendencies and spatial spreads across core transactional vectors.
 
-I calculated the "Big Three" for the key numerical columns (Sales, Units Sold, Unit Price):
+i. Financial Performance Bounds: Grouping total transaction outputs yielded a definitive gross revenue capture of $1,264,761.96 across a footprint of 3,535 physical units shipped.
 
-•	Mean (Average): To understand the typical transaction value.
+ii. Order Distribution Mechanics: Analyzed purchasing volume densities via unit counts per transaction line (Quantity). This process mapped the standard inventory depletion cycles, exposing heavy cluster segments around retail buyers while mapping corporate supply lines characterized by bulk individual orders.
 
-•	Median: To identify if high-end "Computers" were skewing the average.
+iii. Pricing Architecture Ranges: Segmented product unit costs (UnitPrice) to evaluate the pricing distribution spectrum—ranging from everyday workspace assets to premium enterprise infrastructure equipment.
 
-•	Range: Identifying the cheapest item vs. the most expensive (e.g., $65,000 Peripherals vs. $2,500,000 Laptops).
+3. Categorical Variables & Transaction Descriptors: With foundational numeric distributions anchored, variables were cross-examined across distinct transactional fields:
 
-3. Distribution & Relationship Analysis
+i. Product Segmentation Velocity: Aggregations isolated product demand profiles. Chairs ($195,620.11) and Printers ($195,612.61) emerged as the primary gross revenue drivers, while high-velocity categories like Laptops ($192,126.55) and Tablets ($186,568.95) demonstrated sustained market volume.
 
-•	Category Breadth: Verified that the business sells across 6 distinct categories, with Computers being the highest value.
+ii. Payment Gateway Share: Evaluating checkout channels revealed a balanced distribution of consumer financial preferences. Credit Cards paced revenue collection at $263,847.63, followed closely by Online Payments at $262,442.94 and Cash checkouts at $259,786.29.
 
-•	Regional Spread: Confirmed that sales are distributed across North, South, East, and West, ensuring the Time Intelligence comparisons would be statistically valid for all zones.
+4. Operational & Marketing Attribution Cross-Examination: The final phase of EDA involved analyzing multi-variable relationships to map how customer acquisition efforts translated into operational outcomes.
 
-•	Sales vs. Profit Correlation: Verified a consistent 20% margin across the dataset, confirming that profit scales linearly with sales volume.
+i. Funnel-to-Promo Conversions: By plotting ReferralSource paths against dynamic CouponCode identifiers, the analysis illuminated specific conversion trends. Top-of-funnel networks like Instagram and Facebook heavily utilized instant-incentive triggers (such as SAVE10 and FREESHIP), while Email campaigns sustained consumer baskets through focused seasonal offers like WINTER15.
 
-4. Outlier Detection
-
-•	Identified that February 2025 contained an unusually high volume of sales compared to other months. During EDA, I investigated if this was a data entry error or a legitimate sales peak (it was confirmed as a peak).
+ii. Fulfillment Pipeline Health: Analyzing distribution vectors by tracking OrderStatus across payment paths and geographical points isolated potential leakage points. Quantifying systemic status spreads (Delivered, Shipped, Pending, Cancelled, Returned) allowed the business to identify exactly where logistic delays or payment processing friction were occurring.
 
 Tools Used for EDA
+---
 
 •	Excel/Calc: Used for initial filtering, pivot tables to check column totals, and conditional formatting to highlight duplicates.
 
@@ -171,6 +164,30 @@ During the Exploratory Data Analysis phase in Excel, I utilized:
 •	Scatter Plots to validate the correlation between Sales and Profit, confirming a standardized 20% margin across all categories.
 
 •	Pivot Tables to identify the West Region as the primary revenue driver before moving to Power BI for advanced modelling
+
+
+### Key Core Analytics & Findings
+---
+
+1. Product Segment Performance: Aggregate revenue analysis shows remarkably balanced demand across major categories, with high-ticket electronics and foundational workspace furniture driving gross revenue:
+
+i. Top Revenue Drivers: Chairs ($195,620.11) and Printers ($195,612.61) lead the product categories in total gross earnings.
+
+ii. Volume Analysis: Laptops ($192,126.56) and Tablets ($186,568.95) maintain high demand density, validating a strong consumer tech market share.
+
+2. Payment Gateway Optimization: An evaluation of financial checkout funnels reveals a highly diversified preference structure among consumers:
+
+i. Credit Cards stand as the primary value vehicle, capturing $263,847.63 across 712 items.
+
+ii. Online Payments exhibit the highest transaction volume, moving 731 items for a total gross value of $262,442.94.
+
+iii. Cash Checkouts retain competitive transaction velocity with 753 items fulfilled ($259,786.29), indicating that alternative or localized settlement methods remain vital.
+
+3. Marketing Acquisition & Promo Tracking: By evaluating the intersection of ReferralSource and CouponCode, the analysis maps exactly how marketing touchpoints convert:
+
+i. Social channels (Instagram and Facebook) drive high top-of-funnel engagement, converting heavily via immediate-incentive codes like SAVE10 and FREESHIP.
+
+ii. Email Marketing serves as a reliable retention mechanism, demonstrating strong average basket values through targeted seasonal codes (WINTER15).
 
 
 ### Contact
